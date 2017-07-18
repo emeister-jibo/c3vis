@@ -61,7 +61,7 @@ function copyToClipboard(text) {
 }
 
 function addD3DataToTask(task, resourceType, y0) {
-  var resourceAllocation = task.taskDefinition.containerDefinitions.reduce(function (sum, b) { return sum + (resourceType == ResourceEnum.MEMORY ? b.memory : b.cpu); }, 0);
+  var resourceAllocation = task.taskDefinition.containerDefinitions.reduce(function (sum, b) { if ('memoryReservation' in b) { var memory = b.memoryReservation; } else { var memory = b.memory; }; return sum + (resourceType == ResourceEnum.MEMORY ? memory : b.cpu); }, 0);
   var y1 = y0 + resourceAllocation;
   task.d3Data = {
     name: taskFamilyAndRevision(task),
